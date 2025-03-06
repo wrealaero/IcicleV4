@@ -1,7 +1,7 @@
 repeat task.wait() until game:IsLoaded()
 
 -- Key system
-local validKey = "YOUR_SECRET_KEY_HERE"  -- Replace this with your actual key
+local validKey = "123"  -- Replace this with your actual key
 local userInputKey
 
 local function requestKey()
