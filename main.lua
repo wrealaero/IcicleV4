@@ -1,9 +1,3 @@
-if getgenv().keyCorrect then return end -- Prevents GUI from reappearing if key was already entered
-repeat task.wait() until game:IsLoaded()
-if shared.vape then shared.vape:Uninject() end
-
-getgenv().getcustomasset = nil
-
 -- Display key input GUI (Draggable)
 local key = "123" -- Change this to your actual key
 local UIS = game:GetService("UserInputService")
@@ -22,8 +16,8 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) -- Dark theme
 Frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Centers GUI correctly
-Frame.Position = UDim2.new(0.5, 0, 0.4, 0) -- Moves GUI slightly higher for better view
-Frame.Size = UDim2.new(0, 350, 0, 180) -- Slightly larger for better layout
+Frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centers on screen
+Frame.Size = UDim2.new(0, 300, 0, 150)
 Frame.Active = true
 Frame.Draggable = true
 
@@ -34,30 +28,34 @@ UIStroke.Parent = Frame
 UIStroke.Thickness = 2
 UIStroke.Color = Color3.fromRGB(100, 100, 255) -- Blue outline
 
+-- Centered "Enter Key:" text
 TextLabel.Parent = Frame
-TextLabel.Text = "Enter Your Key"
-TextLabel.Font = Enum.Font.GothamBold
-TextLabel.TextSize = 20
+TextLabel.Text = "Enter Key:"
+TextLabel.TextSize = 18
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.BackgroundTransparency = 1
-TextLabel.Position = UDim2.new(0.5, 0, 0.15, 0) -- Centered text
-TextLabel.AnchorPoint = Vector2.new(0.5, 0) -- Proper alignment
-TextLabel.Size = UDim2.new(0, 300, 0, 25)
+TextLabel.Position = UDim2.new(0.5, -100, 0.2, 0) -- Centered horizontally
+TextLabel.Size = UDim2.new(0, 200, 0, 20)
+TextLabel.TextXAlignment = Enum.TextXAlignment.Center -- Align text to center
 
+-- Centered Input Box
 TextBox.Parent = Frame
 TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35) -- Slightly lighter input box
-TextBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+TextBox.Position = UDim2.new(0.5, -100, 0.4, 0) -- Centered horizontally
 TextBox.Size = UDim2.new(0, 200, 0, 30)
 TextBox.Text = ""
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.PlaceholderText = "Paste Key Here"
+TextBox.TextXAlignment = Enum.TextXAlignment.Center -- Align text to center
 
+-- Centered Confirm Button
 ConfirmButton.Parent = Frame
 ConfirmButton.Text = "Confirm"
-ConfirmButton.Position = UDim2.new(0.1, 0, 0.7, 0)
+ConfirmButton.Position = UDim2.new(0.5, -100, 0.7, 0) -- Centered horizontally
 ConfirmButton.Size = UDim2.new(0, 200, 0, 30)
 ConfirmButton.BackgroundColor3 = Color3.fromRGB(50, 50, 255) -- Blue button
 ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConfirmButton.TextXAlignment = Enum.TextXAlignment.Center -- Align text to center
 
 UICorner:Clone().Parent = TextBox
 UICorner:Clone().Parent = ConfirmButton
