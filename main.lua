@@ -75,13 +75,22 @@ ConfirmButton.MouseButton1Click:Connect(function()
         })
         
         -- Wait for GUI removal before loading Vape
-        task.wait(0.2)
-        
+        task.wait(0.5)
+
         -- Ensure Vape loads only once
         if not getgenv().vapeLoaded then
             getgenv().vapeLoaded = true
             -- Load the Vape script
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
+            local vapeScript = game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true)
+            if vapeScript then
+                loadstring(vapeScript)()
+            else
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Error";
+                    Text = "Failed to load Vape script!";
+                    Duration = 5;
+                })
+            end
         end
     else
         -- Show error notification
@@ -100,42 +109,14 @@ repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is enter
 if not getgenv().vapeLoaded then
     getgenv().vapeLoaded = true
     -- Continue executing your existing script only once
-    if identifyexecutor then
-        if table.find({'Argon', 'Wave'}, ({identifyexecutor()})[1]) then
-            getgenv().setthreadidentity = nil
-        end
-    end
-
-    local vape
-    local loadstring = function(...)
-        local res, err = loadstring(...)
-        if err and vape then
-            vape:CreateNotification('Vape', 'Failed to load : '..err, 30, 'alert')
-        end
-        return res
-    end
-
-    local playersService = game:GetService('Players')
-
-    local function finishLoading()
-        vape.Init = nil
-        vape:Load()
-        task.spawn(function()
-            repeat
-                vape:Save()
-                task.wait(10)
-            until not vape.Loaded
-        end)
-    end
-
-    vape = loadstring(game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/refs/heads/main/guis/default.lua'))()
-    shared.vape = vape
-
-    if not shared.VapeIndependent then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/refs/heads/main/games/universal.lua", true))()
-        finishLoading()
+    local vapeScript = game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true)
+    if vapeScript then
+        loadstring(vapeScript)()
     else
-        vape.Init = finishLoading
-        return vape
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Error";
+            Text = "Failed to load Vape script!";
+            Duration = 5;
+        })
     end
 end
