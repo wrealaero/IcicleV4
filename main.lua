@@ -60,8 +60,6 @@ ConfirmButton.TextXAlignment = Enum.TextXAlignment.Center -- Align text to cente
 UICorner:Clone().Parent = TextBox
 UICorner:Clone().Parent = ConfirmButton
 
-repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
-
 ConfirmButton.MouseButton1Click:Connect(function()
     local enteredKey = TextBox.Text
     if enteredKey == key then
@@ -77,6 +75,8 @@ ConfirmButton.MouseButton1Click:Connect(function()
         })
     end
 end)
+
+repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
 
 -- Continue executing your existing script
 if identifyexecutor then
