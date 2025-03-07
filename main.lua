@@ -1,3 +1,4 @@
+repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
 -- Display key input GUI (Draggable)
 local key = "123" -- Change this to your actual key
 local UIS = game:GetService("UserInputService")
