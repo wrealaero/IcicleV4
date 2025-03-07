@@ -1,4 +1,3 @@
-repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
 -- Display key input GUI (Draggable)
 local key = "123" -- Change this to your actual key
 local UIS = game:GetService("UserInputService")
@@ -60,6 +59,8 @@ ConfirmButton.TextXAlignment = Enum.TextXAlignment.Center -- Align text to cente
 
 UICorner:Clone().Parent = TextBox
 UICorner:Clone().Parent = ConfirmButton
+
+repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
 
 ConfirmButton.MouseButton1Click:Connect(function()
     local enteredKey = TextBox.Text
