@@ -65,12 +65,14 @@ ConfirmButton.MouseButton1Click:Connect(function()
     if enteredKey == key then
         getgenv().keyCorrect = true -- Prevents GUI from coming back
         ScreenGui:Destroy() -- Removes GUI
+        -- Delay to make sure GUI is removed before loading the script
+        task.wait(0.2)
         game.StarterGui:SetCore("SendNotification", {
             Title = "Correct Key!";
             Text = "Join .gg/icicle for more updates!";
             Duration = 5;
         })
-        task.wait(0.5) -- Small delay to prevent issues
+        -- Load the Vape script after the GUI is removed
         loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
     else
         game.StarterGui:SetCore("SendNotification", {
