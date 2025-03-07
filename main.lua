@@ -3,7 +3,64 @@ if shared.vape then shared.vape:Uninject() end
 
 getgenv().getcustomasset = nil
 
--- why do exploits fail to implement anything correctly? Is it really that hard?
+-- Display key input GUI (Draggable)
+local key = "123" -- Change this to your actual key
+local UIS = game:GetService("UserInputService")
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.CoreGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 150)
+frame.Position = UDim2.new(0.5, -150, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.Parent = screenGui
+frame.Active = true
+frame.Draggable = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = "Enter Key:"
+textLabel.Size = UDim2.new(1, 0, 0.3, 0)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Parent = frame
+
+local textBox = Instance.new("TextBox")
+textBox.Size = UDim2.new(0.8, 0, 0.3, 0)
+textBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+textBox.Text = ""
+textBox.Parent = frame
+
+local submitButton = Instance.new("TextButton")
+submitButton.Text = "Submit"
+submitButton.Size = UDim2.new(0.8, 0, 0.3, 0)
+submitButton.Position = UDim2.new(0.1, 0, 0.75, 0)
+submitButton.Parent = frame
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Key Required",
+    Text = "Join .gg/icicle for key",
+    Duration = 5
+})
+
+local keyCorrect = false
+
+submitButton.MouseButton1Click:Connect(function()
+    if textBox.Text == key then
+        keyCorrect = true
+        screenGui:Destroy()
+    else
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Key Incorrect",
+            Text = "Join .gg/icicle for key",
+            Duration = 5
+        })
+    end
+end)
+
+repeat task.wait() until keyCorrect -- Wait until the correct key is entered
+
+-- Continue executing your existing script
 if identifyexecutor then
 	if table.find({'Argon', 'Wave'}, ({identifyexecutor()})[1]) then
 		getgenv().setthreadidentity = nil
@@ -61,7 +118,6 @@ local function finishLoading()
 		if (not teleportedServers) and (not shared.VapeIndependent) then
 			teleportedServers = true
 			local teleportScript = [[
-
 				repeat task.wait() until game.HttpGet ~= nil
 
 				shared.vapereload = true
