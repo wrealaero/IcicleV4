@@ -76,8 +76,6 @@ ConfirmButton.MouseButton1Click:Connect(function()
     end
 end)
 
-repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
-
 -- Continue executing your existing script
 if identifyexecutor then
 	if table.find({'Argon', 'Wave'}, ({identifyexecutor()})[1]) then
