@@ -63,18 +63,28 @@ UICorner:Clone().Parent = ConfirmButton
 ConfirmButton.MouseButton1Click:Connect(function()
     local enteredKey = TextBox.Text
     if enteredKey == key then
-        getgenv().keyCorrect = true -- Prevents GUI from coming back
-        ScreenGui:Destroy() -- Removes GUI
-        -- Delay to make sure GUI is removed before loading the script
-        task.wait(0.2)
+        -- Mark key as correct and remove the GUI
+        getgenv().keyCorrect = true
+        ScreenGui:Destroy() -- Removes the key input GUI
+
+        -- Show confirmation notification
         game.StarterGui:SetCore("SendNotification", {
             Title = "Correct Key!";
             Text = "Join .gg/icicle for more updates!";
             Duration = 5;
         })
-        -- Load the Vape script after the GUI is removed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
+        
+        -- Wait for GUI removal before loading Vape
+        task.wait(0.2)
+        
+        -- Ensure Vape loads only once
+        if not getgenv().vapeLoaded then
+            getgenv().vapeLoaded = true
+            -- Load the Vape script
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
+        end
     else
+        -- Show error notification
         game.StarterGui:SetCore("SendNotification", {
             Title = "Incorrect Key";
             Text = "Join .gg/icicle to get the correct key.";
@@ -83,13 +93,13 @@ ConfirmButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Wait for correct key
 repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
 
--- Prevent loading the script again
+-- Prevent Vape from loading twice
 if not getgenv().vapeLoaded then
     getgenv().vapeLoaded = true
-
-    -- Continue executing your existing script
+    -- Continue executing your existing script only once
     if identifyexecutor then
         if table.find({'Argon', 'Wave'}, ({identifyexecutor()})[1]) then
             getgenv().setthreadidentity = nil
