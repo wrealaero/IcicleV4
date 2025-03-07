@@ -74,24 +74,25 @@ ConfirmButton.MouseButton1Click:Connect(function()
             Duration = 5;
         })
         
-        -- Wait for GUI removal before loading Vape
-        task.wait(0.5)
-
         -- Ensure Vape loads only once
-        if not getgenv().vapeLoaded then
-            getgenv().vapeLoaded = true
-            -- Load the Vape script
-            local vapeScript = game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true)
-            if vapeScript then
-                loadstring(vapeScript)()
-            else
-                game.StarterGui:SetCore("SendNotification", {
-                    Title = "Error";
-                    Text = "Failed to load Vape script!";
-                    Duration = 5;
-                })
+        task.spawn(function()
+            -- Wait for the GUI to be destroyed before attempting to load Vape
+            task.wait(0.5)
+            if not getgenv().vapeLoaded then
+                getgenv().vapeLoaded = true
+                -- Load Vape script
+                local vapeScript = game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true)
+                if vapeScript then
+                    loadstring(vapeScript)()
+                else
+                    game.StarterGui:SetCore("SendNotification", {
+                        Title = "Error";
+                        Text = "Failed to load Vape script!";
+                        Duration = 5;
+                    })
+                end
             end
-        end
+        end)
     else
         -- Show error notification
         game.StarterGui:SetCore("SendNotification", {
