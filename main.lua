@@ -7,53 +7,67 @@ getgenv().getcustomasset = nil
 local key = "123" -- Change this to your actual key
 local UIS = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.CoreGui
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke")
+local TextLabel = Instance.new("TextLabel")
+local TextBox = Instance.new("TextBox")
+local ConfirmButton = Instance.new("TextButton")
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 150)
-frame.Position = UDim2.new(0.5, -150, 0.4, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.Parent = screenGui
-frame.Active = true
-frame.Draggable = true
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-local textLabel = Instance.new("TextLabel")
-textLabel.Text = "Enter Key:"
-textLabel.Size = UDim2.new(1, 0, 0.3, 0)
-textLabel.TextScaled = true
-textLabel.BackgroundTransparency = 1
-textLabel.Parent = frame
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) -- Dark theme
+Frame.Position = UDim2.new(0.35, 0, 0.35, 0)
+Frame.Size = UDim2.new(0, 300, 0, 150)
+Frame.Active = true
+Frame.Draggable = true
 
-local textBox = Instance.new("TextBox")
-textBox.Size = UDim2.new(0.8, 0, 0.3, 0)
-textBox.Position = UDim2.new(0.1, 0, 0.4, 0)
-textBox.Text = ""
-textBox.Parent = frame
+UICorner.Parent = Frame
+UICorner.CornerRadius = UDim.new(0, 8)
 
-local submitButton = Instance.new("TextButton")
-submitButton.Text = "Submit"
-submitButton.Size = UDim2.new(0.8, 0, 0.3, 0)
-submitButton.Position = UDim2.new(0.1, 0, 0.75, 0)
-submitButton.Parent = frame
+UIStroke.Parent = Frame
+UIStroke.Thickness = 2
+UIStroke.Color = Color3.fromRGB(100, 100, 255) -- Blue outline
 
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "Key Required",
-    Text = "Join .gg/icicle for key",
-    Duration = 5
-})
+TextLabel.Parent = Frame
+TextLabel.Text = "Enter Key:"
+TextLabel.TextSize = 18
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1
+TextLabel.Position = UDim2.new(0.1, 0, 0.2, 0)
+TextLabel.Size = UDim2.new(0, 200, 0, 20)
 
-local keyCorrect = false
+TextBox.Parent = Frame
+TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35) -- Slightly lighter input box
+TextBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+TextBox.Size = UDim2.new(0, 200, 0, 30)
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.PlaceholderText = "Paste Key Here"
 
-submitButton.MouseButton1Click:Connect(function()
-    if textBox.Text == key then
-        keyCorrect = true
-        screenGui:Destroy()
+ConfirmButton.Parent = Frame
+ConfirmButton.Text = "Confirm"
+ConfirmButton.Position = UDim2.new(0.1, 0, 0.7, 0)
+ConfirmButton.Size = UDim2.new(0, 200, 0, 30)
+ConfirmButton.BackgroundColor3 = Color3.fromRGB(50, 50, 255) -- Blue button
+ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+UICorner:Clone().Parent = TextBox
+UICorner:Clone().Parent = ConfirmButton
+
+ConfirmButton.MouseButton1Click:Connect(function()
+    local enteredKey = TextBox.Text
+    if enteredKey == "123" then
+        ScreenGui:Destroy() -- Removes GUI if correct
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
     else
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Key Incorrect",
-            Text = "Join .gg/icicle for key",
-            Duration = 5
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Incorrect Key";
+            Text = "Join .gg/icicle to get the correct key.";
+            Duration = 3;
         })
     end
 end)
@@ -124,7 +138,7 @@ local function finishLoading()
 				if shared.VapeDeveloper then
 					loadstring(readfile('newvape/loader.lua'), 'loader')()
 				else
-					loadstring(game:HttpGet("https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/refs/heads/main/main.lua", true))()
+					loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
 				end
 			]]
 			if shared.VapeDeveloper then
