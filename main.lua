@@ -20,7 +20,8 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) -- Dark theme
-Frame.Position = UDim2.new(0.35, 0, 0.35, 0)
+Frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Centers GUI correctly
+Frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centers on screen
 Frame.Size = UDim2.new(0, 300, 0, 150)
 Frame.Active = true
 Frame.Draggable = true
@@ -60,8 +61,9 @@ UICorner:Clone().Parent = ConfirmButton
 
 ConfirmButton.MouseButton1Click:Connect(function()
     local enteredKey = TextBox.Text
-    if enteredKey == "123" then
-        ScreenGui:Destroy() -- Removes GUI if correct
+    if enteredKey == key then
+        ScreenGui:Destroy() -- Removes GUI
+        getgenv().keyCorrect = true -- Prevents reloading GUI
         loadstring(game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true))()
     else
         game.StarterGui:SetCore("SendNotification", {
@@ -72,7 +74,7 @@ ConfirmButton.MouseButton1Click:Connect(function()
     end
 end)
 
-repeat task.wait() until keyCorrect -- Wait until the correct key is entered
+repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
 
 -- Continue executing your existing script
 if identifyexecutor then
