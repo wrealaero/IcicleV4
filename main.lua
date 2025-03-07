@@ -2,47 +2,63 @@ repeat task.wait() until game:IsLoaded()
 
 -- Key system
 local validKey = "123"  -- Replace this with your actual key
-local userInputKey
 
 local function requestKey()
-    repeat
-        userInputKey = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("KeyPrompt") or Instance.new("ScreenGui")
-        userInputKey.Name = "KeyPrompt"
-        userInputKey.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+    local player = game:GetService("Players").LocalPlayer
+    local playerGui = player:FindFirstChild("PlayerGui")
+    
+    if not playerGui then
+        repeat task.wait() until player:FindFirstChild("PlayerGui")
+        playerGui = player:FindFirstChild("PlayerGui")
+    end
 
-        local frame = Instance.new("Frame", userInputKey)
-        frame.Size = UDim2.new(0, 300, 0, 150)
-        frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-        frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    -- Remove old UI if it exists
+    local existingGui = playerGui:FindFirstChild("KeyPrompt")
+    if existingGui then
+        existingGui:Destroy()
+    end
 
-        local textBox = Instance.new("TextBox", frame)
-        textBox.Size = UDim2.new(1, -20, 0, 50)
-        textBox.Position = UDim2.new(0, 10, 0, 40)
-        textBox.PlaceholderText = "Enter Key..."
-        textBox.Text = ""
+    -- Create new Key UI
+    local keyGui = Instance.new("ScreenGui", playerGui)
+    keyGui.Name = "KeyPrompt"
 
-        local submitButton = Instance.new("TextButton", frame)
-        submitButton.Size = UDim2.new(1, -20, 0, 40)
-        submitButton.Position = UDim2.new(0, 10, 0, 100)
-        submitButton.Text = "Submit"
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 150)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.Parent = keyGui
 
-        submitButton.MouseButton1Click:Connect(function()
-            if textBox.Text == validKey then
-                userInputKey:Destroy()
-                loadVape()
-            else
-                textBox.Text = "Invalid Key!"
-                task.wait(1)
-                textBox.Text = ""
-            end
-        end)
-    until false
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(1, -20, 0, 50)
+    textBox.Position = UDim2.new(0, 10, 0, 40)
+    textBox.PlaceholderText = "Enter Key..."
+    textBox.Text = ""
+    textBox.Parent = frame
+
+    local submitButton = Instance.new("TextButton")
+    submitButton.Size = UDim2.new(1, -20, 0, 40)
+    submitButton.Position = UDim2.new(0, 10, 0, 100)
+    submitButton.Text = "Submit"
+    submitButton.Parent = frame
+
+    submitButton.MouseButton1Click:Connect(function()
+        local inputKey = textBox.Text:gsub("%s+", "") -- Trim whitespace
+        if inputKey == validKey then
+            keyGui:Destroy()
+            print("Key accepted. Loading Vape...")
+            loadVape()
+        else
+            textBox.Text = "Invalid Key!"
+            task.wait(1)
+            textBox.Text = ""
+        end
+    end)
 end
 
 -- Function to load Vape only if key is correct
 local function loadVape()
+    print("Loading Vape...")  -- Debug message
     if shared.vape then shared.vape:Uninject() end
-
     getgenv().getcustomasset = nil
 
     if identifyexecutor then
@@ -59,28 +75,25 @@ local function loadVape()
         end
         return res
     end
+
     local queue_on_teleport = queue_on_teleport or function() end
     local isfile = isfile or function(file)
-        local suc, res = pcall(function()
-            return readfile(file)
-        end)
+        local suc, res = pcall(function() return readfile(file) end)
         return suc and res ~= nil and res ~= ''
     end
-    local cloneref = cloneref or function(obj)
-        return obj
-    end
+    local cloneref = cloneref or function(obj) return obj end
     local playersService = cloneref(game:GetService('Players'))
 
     local function downloadFile(path, func)
         if not isfile(path) then
             local suc, res = pcall(function()
-                return game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/refs/heads/main/'..'/'..select(1, path:gsub('newvape/', '')), true)
+                return game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/main/'..path, true)
             end)
             if not suc or res == '404: Not Found' then
                 error(res)
             end
             if path:find('.lua') then
-                res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
+                res = '-- This watermark is used to delete the file if its cached, remove it to persist.\n'..res
             end
             writefile(path, res)
         end
@@ -97,35 +110,24 @@ local function loadVape()
             until not vape.Loaded
         end)
 
-        local teleportedServers
         vape:Clean(playersService.LocalPlayer.OnTeleport:Connect(function()
-            if (not teleportedServers) and (not shared.VapeIndependent) then
-                teleportedServers = true
+            if not shared.VapeIndependent then
                 local teleportScript = [[
                     repeat task.wait() until game.HttpGet ~= nil
                     shared.vapereload = true
                     if shared.VapeDeveloper then
                         loadstring(readfile('newvape/loader.lua'), 'loader')()
                     else
-                        loadstring(game:HttpGet("https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/refs/heads/main/main.lua", true))()
+                        loadstring(game:HttpGet("https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/main/main.lua", true))()
                     end
                 ]]
-                if shared.VapeDeveloper then
-                    teleportScript = 'shared.VapeDeveloper = true\n'..teleportScript
-                end
-                if shared.VapeCustomProfile then
-                    teleportScript = 'shared.VapeCustomProfile = "'..shared.VapeCustomProfile..'"\n'..teleportScript
-                end
                 vape:Save()
                 queue_on_teleport(teleportScript)
             end
         end))
 
-        if not shared.vapereload then
-            if not vape.Categories then return end
-            if vape.Categories.Main.Options['GUI bind indicator'].Enabled then
-                vape:CreateNotification('Finished Loading', vape.VapeButton and 'Press the button in the top right to open GUI' or 'Press '..table.concat(vape.Keybind, ' + '):upper()..' to open GUI', 5)
-            end
+        if not shared.vapereload and vape.Categories then
+            vape:CreateNotification('Finished Loading', 'Press the GUI button to open', 5)
         end
     end
 
@@ -143,15 +145,13 @@ local function loadVape()
     if not shared.VapeIndependent then
         loadstring(downloadFile('newvape/games/universal.lua'), 'universal')()
         if isfile('newvape/games/'..game.PlaceId..'.lua') then
-            loadstring(readfile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+            loadstring(readfile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))()
         else
-            if not shared.VapeDeveloper then
-                local suc, res = pcall(function()
-                    return game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn'..readfile('newvape/profiles/commit.txt')..'/games/'..game.PlaceId..'.lua', true)
-                end)
-                if suc and res ~= '404: Not Found' then
-                    loadstring(downloadFile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
-                end
+            local suc, res = pcall(function()
+                return game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/main/games/'..game.PlaceId..'.lua', true)
+            end)
+            if suc and res ~= '404: Not Found' then
+                loadstring(downloadFile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))()
             end
         end
         finishLoading()
