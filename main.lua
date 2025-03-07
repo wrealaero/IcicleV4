@@ -1,4 +1,5 @@
--- Display key input GUI (Draggable)
+if getgenv().keyCorrect then return end
+
 local key = "123" -- Change this to your actual key
 local UIS = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
@@ -75,25 +76,22 @@ ConfirmButton.MouseButton1Click:Connect(function()
         })
         
         -- Ensure Vape loads only once
-        task.spawn(function()
-            -- Wait for the GUI to be destroyed before attempting to load Vape
-            task.wait(0.5)
-            if not getgenv().vapeLoaded then
-                getgenv().vapeLoaded = true
-                -- Load Vape script
-                local vapeScript = game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true)
-                if vapeScript then
-                    loadstring(vapeScript)()
-                else
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Error";
-                        Text = "Failed to load Vape script!";
-                        Duration = 5;
-                    })
-                end
-            end
-        end)
-    else
+if not getgenv().vapeLoaded then
+    getgenv().vapeLoaded = true -- Ensure it loads only once
+    task.spawn(function()
+        task.wait(0.5)
+        local vapeScript = game:HttpGet("https://raw.githubusercontent.com/wrealaero/IcicleV4/refs/heads/main/main.lua", true)
+        if vapeScript then
+            loadstring(vapeScript)()
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Error";
+                Text = "Failed to load Vape script!";
+                Duration = 5;
+            })
+        end
+    end)
+end
         -- Show error notification
         game.StarterGui:SetCore("SendNotification", {
             Title = "Incorrect Key";
@@ -105,11 +103,12 @@ end)
 
 -- Wait for correct key
 repeat task.wait() until getgenv().keyCorrect -- Wait until correct key is entered
--- Continue executing your existing script
+
 if identifyexecutor then
-	if table.find({'Argon', 'Wave'}, ({identifyexecutor()})[1]) then
-		getgenv().setthreadidentity = nil
-	end
+    local success, result = pcall(identifyexecutor)
+    if success and table.find({'Argon', 'Wave'}, result) then
+        getgenv().setthreadidentity = nil
+    end
 end
 
 local vape
@@ -133,19 +132,21 @@ end
 local playersService = cloneref(game:GetService('Players'))
 
 local function downloadFile(path, func)
-	if not isfile(path) then
-		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/refs/heads/main/'..'/'..select(1, path:gsub('newvape/', '')), true)
-		end)
-		if not suc or res == '404: Not Found' then
-			error(res)
-		end
-		if path:find('.lua') then
-			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-		end
-		writefile(path, res)
-	end
-	return (func or readfile)(path)
+    local maxAttempts = 3
+    for attempt = 1, maxAttempts do
+        local suc, res = pcall(function()
+            return game:HttpGet('https://raw.githubusercontent.com/ImDamc/VapeV4Reborn/main/'..path, true)
+        end)
+        if suc and res ~= '404: Not Found' then
+            if path:find('.lua') then
+                res = '-- Cache Control: Remove this line to keep file after updates.\n'..res
+            end
+            writefile(path, res)
+            return (func or readfile)(path)
+        end
+        task.wait(1) -- Retry after waiting
+    end
+    error("Failed to download: " .. path)
 end
 
 local function finishLoading()
