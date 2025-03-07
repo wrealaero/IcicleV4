@@ -4,7 +4,7 @@ if shared.vape then shared.vape:Uninject() end
 getgenv().getcustomasset = nil
 
 -- Display key input GUI (Draggable)
-local key = "YOUR_SECRET_KEY_HERE" -- Change this to your actual key
+local key = "123" -- Change this to your actual key
 local UIS = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
 local screenGui = Instance.new("ScreenGui")
