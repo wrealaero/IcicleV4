@@ -11,56 +11,33 @@ local dragFrame = Instance.new("Frame")
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Main Frame
-mainFrame.Size = UDim2.new(0, 400, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
-mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.Size = UDim2.new(0, 400, 0, 300)  -- Adjusted the height for cleaner spacing
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)  -- Subtle dark gray background
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
 mainFrame.Active = true
 mainFrame.Draggable = true
 
--- Add a border radius for the main frame
+-- Remove unnecessary effects (no blur or gradients)
 local cornerRadius = Instance.new("UICorner")
-cornerRadius.CornerRadius = UDim.new(0, 15)
+cornerRadius.CornerRadius = UDim.new(0, 10)  -- Softer rounded corners for a more modern look
 cornerRadius.Parent = mainFrame
 
--- Create a smooth gradient background
-local uiGradient = Instance.new("UIGradient")
-uiGradient.Parent = mainFrame
-uiGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 60)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 30, 30))
-})
-
--- Drag Frame (for smooth dragging experience)
-dragFrame.Size = UDim2.new(1, 0, 0, 40)
-dragFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+-- Drag Frame (for smoother dragging experience)
+dragFrame.Size = UDim2.new(1, 0, 0, 35)  -- Slightly smaller drag area for a cleaner look
+dragFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)  -- Subtle gray color for the drag frame
 dragFrame.Parent = mainFrame
 dragFrame.BorderSizePixel = 0
 
 local dragUICorner = Instance.new("UICorner")
-dragUICorner.CornerRadius = UDim.new(0, 10)
+dragUICorner.CornerRadius = UDim.new(0, 8)
 dragUICorner.Parent = dragFrame
 
--- Smooth dragging with Tween
-dragFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        local startPos = input.Position
-        local startFramePos = mainFrame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
-                local delta = input.Position - startPos
-                mainFrame.Position = UDim2.new(startFramePos.X.Scale, startFramePos.X.Offset + delta.X, startFramePos.Y.Scale, startFramePos.Y.Offset + delta.Y)
-            end
-        end)
-    end
-end)
-
 -- Key TextBox
-keyBox.Size = UDim2.new(0.8, 0, 0, 40)
-keyBox.Position = UDim2.new(0.1, 0, 0.25, 0)
-keyBox.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+keyBox.Size = UDim2.new(0.8, 0, 0, 35)  -- Adjusted padding and height for cleaner look
+keyBox.Position = UDim2.new(0.1, 0, 0.2, 0)
+keyBox.BackgroundColor3 = Color3.fromRGB(55, 55, 55)  -- Dark gray background for text box
 keyBox.PlaceholderText = "Enter Key"
 keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 keyBox.TextScaled = true
@@ -71,61 +48,60 @@ keyBoxUICorner.CornerRadius = UDim.new(0, 10)
 keyBoxUICorner.Parent = keyBox
 
 -- Submit Button
-submitButton.Size = UDim2.new(0.8, 0, 0, 45)
+submitButton.Size = UDim2.new(0.8, 0, 0, 40)
 submitButton.Position = UDim2.new(0.1, 0, 0.45, 0)
-submitButton.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+submitButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)  -- Bright blue button color
 submitButton.Text = "Submit Key"
 submitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 submitButton.TextSize = 18
 submitButton.Parent = mainFrame
 
--- Smooth button hover effect
 submitButton.MouseEnter:Connect(function()
-    submitButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    submitButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)  -- Lighter blue on hover
 end)
 
 submitButton.MouseLeave:Connect(function()
-    submitButton.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+    submitButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)  -- Original color
 end)
 
 -- Discord Button
-discordButton.Size = UDim2.new(0.8, 0, 0, 45)
+discordButton.Size = UDim2.new(0.8, 0, 0, 40)
 discordButton.Position = UDim2.new(0.1, 0, 0.6, 0)
-discordButton.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+discordButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 discordButton.Text = "Join Discord"
 discordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 discordButton.TextSize = 18
 discordButton.Parent = mainFrame
 
 discordButton.MouseEnter:Connect(function()
-    discordButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    discordButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
 end)
 
 discordButton.MouseLeave:Connect(function()
-    discordButton.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+    discordButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 end)
 
 -- Get Key Button
-getKeyButton.Size = UDim2.new(0.8, 0, 0, 45)
+getKeyButton.Size = UDim2.new(0.8, 0, 0, 40)
 getKeyButton.Position = UDim2.new(0.1, 0, 0.75, 0)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 getKeyButton.Text = "Get Key"
 getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 getKeyButton.TextSize = 18
 getKeyButton.Parent = mainFrame
 
 getKeyButton.MouseEnter:Connect(function()
-    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
 end)
 
 getKeyButton.MouseLeave:Connect(function()
-    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 end)
 
--- Button Animation Effect
+-- Button Click Animation
 local function animateButtonClick(button)
     local originalSize = button.Size
-    button:TweenSize(UDim2.new(0.85, 0, 0, 45), "Out", "Quad", 0.1, true)
+    button:TweenSize(UDim2.new(0.85, 0, 0, 40), "Out", "Quad", 0.1, true)
     wait(0.1)
     button:TweenSize(originalSize, "Out", "Quad", 0.1, true)
 end
@@ -142,8 +118,7 @@ submitButton.MouseButton1Click:Connect(function()
             Text = "Key Verified! Script Loaded!";
             Duration = 5;
         })
-
-        -- Begin Loading Script
+        
         -- Insert your loading logic here
     else
         -- Access Denied Notification
