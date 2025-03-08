@@ -27,7 +27,6 @@ title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18 -- Increase text size for readability
 title.BackgroundTransparency = 0.3 -- Slightly transparent background
-title.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Darker background for title
 title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 title.Parent = frame
 
@@ -49,8 +48,12 @@ CloseButton.Parent = frame
 
 
 local KeySystem = Instance.new("TextBox")
-SubmitButton.Position = UDim2.new(0.05, 0, 0.6, 10) -- Adjust positioning
-GetKeyButton.Position = UDim2.new(0.05, 0, 0.8, 10) -- Adjust positioning
+local SubmitButton = Instance.new("TextButton")
+local GetKeyButton = Instance.new("TextButton")
+
+-- Position buttons after creation
+SubmitButton.Position = UDim2.new(0.05, 0, 0.6, 0)
+GetKeyButton.Position = UDim2.new(0.05, 0, 0.8, 0)
 KeySystem.Text = "Enter the Key"
 KeySystem.TextColor3 = Color3.new(1, 1, 1)
 KeySystem.Font = Enum.Font.Gotham
