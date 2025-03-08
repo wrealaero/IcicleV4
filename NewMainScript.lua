@@ -53,16 +53,16 @@ getKeyButton.Position = UDim2.new(0.1, 0, 0.85, 0)
 getKeyButton.Text = "Get Key"
 getKeyButton.Parent = mainFrame
 
--- Function to fetch the key from your website
+-- Fetch the key from the website
 local function getKeyFromWebsite()
     local success, response = pcall(function()
-        return game:GetService("HttpService"):GetAsync("https://wrealaero.github.io/IcicleKeyGen/")
+        return game:GetService("HttpService"):GetAsync("https://wrealaero.github.io/IcicleKeyGen/")  -- Your website URL
     end)
     
     if success then
-        -- Strip any spaces or newlines from the response
-        local key = response:match("KEY-%d+-%d+-%d+-%w+-%d+")
-        return key and key:match("^%s*(.-)%s*$") -- Trim any extra spaces from the key
+        -- Extract key from response (assuming it's wrapped in a <p id="key"> element)
+        local key = response:match('<p class="key" id="key">(.-)</p>')
+        return key and key:match("^%s*(.-)%s*$")  -- Trim any extra spaces from the key
     else
         return nil
     end
@@ -71,11 +71,11 @@ end
 -- Key Verification
 submitButton.MouseButton1Click:Connect(function()
     local correctKey = getKeyFromWebsite()  -- Fetch the correct key from the website
+    
     if correctKey and keyBox.Text == correctKey and keyBox.Text ~= "" then
         screenGui:Destroy()
         
-        -- Continue with your file handling and script loading (as per your original logic)
-        -- Add file downloading and script execution logic here...
+        -- Your existing logic for handling successful verification...
     else
         game.StarterGui:SetCore("SendNotification", {
             Title = "Access Denied";
