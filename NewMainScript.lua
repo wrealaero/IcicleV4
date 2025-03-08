@@ -65,7 +65,7 @@ end)
 
 -- Key Verification Logic
 submitButton.MouseButton1Click:Connect(function()
-    if keyBox.Text == "123" and keyBox.Text ~= "" then  -- Change this to the manual key you set
+    if keyBox.Text == "wfEuSxy5FHA7sKOj" and keyBox.Text ~= "" then  -- Change this to the manual key you set
         screenGui:Destroy()  -- Destroy the GUI upon successful verification
 
         -- Success Notification
