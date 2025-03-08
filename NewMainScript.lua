@@ -97,7 +97,7 @@ SubmitButton.MouseButton1Click:Connect(function()
     if not getgenv().Key or getgenv().Key == "InvalidKey" then
         game.StarterGui:SetCore("SendNotification", {
             Title = "Error";
-            Text = "Invalid or missing key! Get a valid key from Linkvertise.";
+            Text = "Invalid or missing key! Get a valid key from .gg/icicle";
             Duration = 5;
         })
         return
@@ -157,7 +157,7 @@ SubmitButton.MouseButton1Click:Connect(function()
     else
         game.StarterGui:SetCore("SendNotification", {
             Title = "Access Denied";
-            Text = "Incorrect key! Get the correct key from Linkvertise.";
+            Text = "Incorrect key! Get the correct key from .gg/icicle";
             Duration = 5;
         })
     end
