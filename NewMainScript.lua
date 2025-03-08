@@ -7,6 +7,7 @@ local discordButton = Instance.new("TextButton")
 local getKeyButton = Instance.new("TextButton")
 local dragFrame = Instance.new("Frame")
 local uiGradient = Instance.new("UIGradient")
+local uiCorner = Instance.new("UICorner")
 local blurEffect = Instance.new("BlurEffect")
 
 -- Parent GUI to Player
@@ -23,9 +24,8 @@ mainFrame.Draggable = true
 mainFrame.BackgroundTransparency = 0.2
 
 -- Add a nice border radius to the main frame for smoother edges
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 12)
-UICorner.Parent = mainFrame
+uiCorner.CornerRadius = UDim.new(0, 15)
+uiCorner.Parent = mainFrame
 
 -- Add a Gradient Background
 uiGradient.Parent = mainFrame
@@ -67,11 +67,15 @@ end)
 -- Key TextBox
 keyBox.Size = UDim2.new(0.8, 0, 0, 40)
 keyBox.Position = UDim2.new(0.1, 0, 0.3, 0)
-keyBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+keyBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 keyBox.PlaceholderText = "Enter Key"
 keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 keyBox.TextScaled = true
 keyBox.Parent = mainFrame
+
+local keyBoxUICorner = Instance.new("UICorner")
+keyBoxUICorner.CornerRadius = UDim.new(0, 10)
+keyBoxUICorner.Parent = keyBox
 
 -- Submit Button
 submitButton.Size = UDim2.new(0.8, 0, 0, 40)
@@ -125,7 +129,7 @@ getKeyButton.MouseLeave:Connect(function()
     getKeyButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
 end)
 
--- Animation Effects: Button Click
+-- Smooth button click effect
 local function animateButtonClick(button)
     local originalSize = button.Size
     button:TweenSize(UDim2.new(0.85, 0, 0, 40), "Out", "Quad", 0.1, true)
@@ -133,7 +137,7 @@ local function animateButtonClick(button)
     button:TweenSize(originalSize, "Out", "Quad", 0.1, true)
 end
 
--- Key Verification
+-- Key Verification Logic
 submitButton.MouseButton1Click:Connect(function()
     animateButtonClick(submitButton)
     if keyBox.Text == "123" and keyBox.Text ~= "" then  -- Change this to the manual key you set
@@ -146,7 +150,6 @@ submitButton.MouseButton1Click:Connect(function()
             Duration = 5;
         })
 
-        -- This is where your "loading" or main script will run after key is verified
         -- Begin Loading Script
 
         local function isfile(file)
