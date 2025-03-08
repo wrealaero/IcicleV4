@@ -2,29 +2,28 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 200, 0, 100)
-frame.Position = UDim2.new(0.5, -100, 0.5, -50)
-frame.BackgroundTransparency = 0.2  -- For transparency effect
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Darker background
-frame.BorderSizePixel = 2  -- Adding a border
-frame.BorderColor3 = Color3.fromRGB(100, 100, 100)  -- Border color
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+frame.BackgroundTransparency = 0.1
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)  -- Darker background with slight transparency
+frame.BorderSizePixel = 0  -- No border
 frame.Parent = screenGui
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
 
+-- Title Label
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 20)
-title.Position = UDim2.new(0, 0, 0, -20)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, -40)
 title.Text = "Icicle Key System"
-title.Font = Enum.Font.GothamBold  -- Modern font style
-title.TextSize = 18  -- Adjust the size to make it stand out
-title.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White color
-title.BackgroundTransparency = 0.8  -- Transparent background for the title
-title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Slight background tint
-title.TextColor3 = Color3.new(1, 1, 1)
-title.BackgroundColor3 = Color3.new(0, 0, 0)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1
+title.TextAlignment = Enum.TextAlignment.Center
 title.Parent = frame
 
+-- Dragging functionality
 local dragging, dragInput, dragStart, startPos
-
 local function update(input)
     local delta = input.Position - dragStart
     frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
@@ -35,18 +34,6 @@ title.InputBegan:Connect(function(input)
         dragging = true
         dragStart = input.Position
         startPos = frame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-title.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
     end
 end)
 
@@ -56,77 +43,87 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
-local KeySystem = Instance.new("TextBox")
-KeySystem.Size = UDim2.new(1, 0, 0.5, 0)
-KeySystem.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background
-KeySystem.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-KeySystem.TextSize = 16
-KeySystem.Font = Enum.Font.Gotham
-KeySystem.BorderSizePixel = 0
-KeySystem.BackgroundTransparency = 0.3  -- Slight transparency
-KeySystem.Text = "Enter the Key"
-KeySystem.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background
-KeySystem.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-KeySystem.TextSize = 16
-KeySystem.Font = Enum.Font.Gotham
-KeySystem.BorderSizePixel = 0
-KeySystem.BackgroundTransparency = 0.3  -- Slight transparency
-KeySystem.Parent = frame
+-- Key System TextBox
+local keySystem = Instance.new("TextBox")
+keySystem.Size = UDim2.new(0.8, 0, 0.2, 0)
+keySystem.Position = UDim2.new(0.5, -150, 0.3, 0)
+keySystem.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  -- Dark background with slight transparency
+keySystem.TextColor3 = Color3.fromRGB(255, 255, 255)
+keySystem.TextSize = 18
+keySystem.Font = Enum.Font.Gotham
+keySystem.BorderSizePixel = 0
+keySystem.BackgroundTransparency = 0.3
+keySystem.PlaceholderText = "Enter the Key"
+keySystem.Parent = frame
 
-local SubmitButton = Instance.new("TextButton")
-SubmitButton.Size = UDim2.new(0.5, 0, 0.5, 0)
-SubmitButton.Position = UDim2.new(0, 0, 0.5, 0)
-SubmitButton.BackgroundColor3 = Color3.fromRGB(0, 122, 255)  -- Blue background for submit
-SubmitButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-SubmitButton.TextSize = 16
-SubmitButton.Font = Enum.Font.Gotham
+-- Submit Button
+local submitButton = Instance.new("TextButton")
+submitButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+submitButton.Position = UDim2.new(0.5, -150, 0.6, 0)
+submitButton.BackgroundColor3 = Color3.fromRGB(0, 122, 255)  -- Blue
+submitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+submitButton.TextSize = 18
+submitButton.Font = Enum.Font.Gotham
+submitButton.Text = "Submit"
+submitButton.BorderSizePixel = 0
+submitButton.Parent = frame
 
--- Hover effect
-SubmitButton.MouseEnter:Connect(function()
-    SubmitButton.BackgroundColor3 = Color3.fromRGB(0, 105, 217)
+submitButton.MouseEnter:Connect(function()
+    submitButton.BackgroundColor3 = Color3.fromRGB(0, 105, 217)  -- Hover color
 end)
-SubmitButton.MouseLeave:Connect(function()
-    SubmitButton.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+
+submitButton.MouseLeave:Connect(function()
+    submitButton.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
 end)
-SubmitButton.Parent = frame
 
-local CloseButton = Instance.new("TextButton")
-CloseButton.Size = UDim2.new(0, 20, 0, 20)
-CloseButton.Position = UDim2.new(1, -20, 0, 0)
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red color
-CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-CloseButton.Size = UDim2.new(0, 30, 0, 30)  -- Increased size
-CloseButton.Font = Enum.Font.GothamBold
-CloseButton.TextSize = 18
+-- Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -50, 0, -50)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 16
+closeButton.Font = Enum.Font.GothamBold
+closeButton.Text = "X"
+closeButton.BorderSizePixel = 0
+closeButton.Parent = frame
 
--- Rounded edges
-CloseButton.ClipsDescendants = true
-CloseButton.BorderSizePixel = 0
-CloseButton.BackgroundTransparency = 0.7
-CloseButton.Parent = frame
-
-CloseButton.MouseButton1Click:Connect(function()
+closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-local GetKeyButton = Instance.new("TextButton")
-GetKeyButton.Size = UDim2.new(0.5, 0, 0.5, 0)
-GetKeyButton.Position = UDim2.new(0.5, 0, 0.5, 0)
-GetKeyButton.BackgroundColor3 = Color3.fromRGB(34, 193, 195)
-GetKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-GetKeyButton.TextSize = 16
-GetKeyButton.Font = Enum.Font.Gotham
+-- Get Key Button
+local getKeyButton = Instance.new("TextButton")
+getKeyButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+getKeyButton.Position = UDim2.new(0.5, -150, 0.8, 0)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(34, 193, 195)
+getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+getKeyButton.TextSize = 18
+getKeyButton.Font = Enum.Font.Gotham
+getKeyButton.Text = "Get Key"
+getKeyButton.BorderSizePixel = 0
+getKeyButton.Parent = frame
 
-GetKeyButton.MouseEnter:Connect(function()
-    GetKeyButton.BackgroundColor3 = Color3.fromRGB(24, 162, 164)
+getKeyButton.MouseEnter:Connect(function()
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(24, 162, 164)  -- Hover color
 end)
-GetKeyButton.MouseLeave:Connect(function()
-    GetKeyButton.BackgroundColor3 = Color3.fromRGB(34, 193, 195)
-end)
-GetKeyButton.Parent = frame
 
+getKeyButton.MouseLeave:Connect(function()
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(34, 193, 195)
+end)
+
+-- Clipboard action for the "Get Key" button
+getKeyButton.MouseButton1Click:Connect(function()
+    setclipboard("https://link-hub.net/1233399/icicle-key-generator")
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Key System",
+        Text = "Link copied! Paste this on your browser",
+        Duration = 5,
+    })
+end)
+
+-- Fetch key logic
 local HttpService = game:GetService("HttpService")
-
 local function fetchKey()
     local success, response = pcall(function()
         return HttpService:GetAsync("https://wrealaero.github.io/IcicleKeyGen/")
@@ -141,15 +138,27 @@ end
 
 fetchKey()
 
-SubmitButton.MouseButton1Click:Connect(function()
+submitButton.MouseButton1Click:Connect(function()
     if not getgenv().Key or getgenv().Key == "InvalidKey" then
         game.StarterGui:SetCore("SendNotification", {
-            Title = "Error";
-            Text = "Invalid or missing key! Get a valid key from .gg/icicle";
-            Duration = 5;
+            Title = "Error",
+            Text = "Invalid or missing key! Get a valid key from .gg/icicle",
+            Duration = 5,
         })
         return
-    end 
+    end
+
+    if keySystem.Text == getgenv().Key and keySystem.Text ~= "" then
+        screenGui:Destroy()
+        -- Your subsequent code logic...
+    else
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Access Denied",
+            Text = "Incorrect key! Get the correct key from .gg/icicle",
+            Duration = 5,
+        })
+    end
+end)
 
     if KeySystem.Text == getgenv().Key and KeySystem.Text ~= nil and KeySystem.Text ~= "" then
         screenGui:Destroy()
