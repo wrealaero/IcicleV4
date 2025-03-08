@@ -53,9 +53,25 @@ getKeyButton.Position = UDim2.new(0.1, 0, 0.85, 0)
 getKeyButton.Text = "Get Key"
 getKeyButton.Parent = mainFrame
 
+-- Function to fetch the key from your website
+local function getKeyFromWebsite()
+    local success, response = pcall(function()
+        return game:GetService("HttpService"):GetAsync("https://wrealaero.github.io/IcicleKeyGen/")
+    end)
+    
+    if success then
+        -- Extract the key from the website response (use your method to get the key from the page)
+        -- Here I am assuming that the website directly returns the key
+        return response:match("KEY-%d+-%d+-%d+-%w+-%d+") -- Match the key format
+    else
+        return nil
+    end
+end
+
 -- Key Verification
 submitButton.MouseButton1Click:Connect(function()
-    if keyBox.Text == getgenv().Key and keyBox.Text ~= "" then
+    local correctKey = getKeyFromWebsite()  -- Fetch the correct key from the website
+    if correctKey and keyBox.Text == correctKey and keyBox.Text ~= "" then
         screenGui:Destroy()
         
         local function isfile(file)
