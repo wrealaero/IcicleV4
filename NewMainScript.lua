@@ -19,8 +19,6 @@ title.TextSize = 18  -- Adjust the size to make it stand out
 title.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White color
 title.BackgroundTransparency = 0.8  -- Transparent background for the title
 title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Slight background tint
-title.TextColor3 = Color3.new(1, 1, 1)
-title.BackgroundColor3 = Color3.new(0, 0, 0)
 title.Parent = frame
 
 local dragging, dragInput, dragStart, startPos
@@ -51,19 +49,13 @@ title.InputChanged:Connect(function(input)
 end)
 
 game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
+    if dragging and input == dragInput then
+    update(input)
     end
 end)
 
 local KeySystem = Instance.new("TextBox")
 KeySystem.Size = UDim2.new(1, 0, 0.5, 0)
-KeySystem.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background
-KeySystem.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-KeySystem.TextSize = 16
-KeySystem.Font = Enum.Font.Gotham
-KeySystem.BorderSizePixel = 0
-KeySystem.BackgroundTransparency = 0.3  -- Slight transparency
 KeySystem.Text = "Enter the Key"
 KeySystem.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background
 KeySystem.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
@@ -95,15 +87,19 @@ CloseButton.Size = UDim2.new(0, 20, 0, 20)
 CloseButton.Position = UDim2.new(1, -20, 0, 0)
 CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red color
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-CloseButton.Size = UDim2.new(0, 30, 0, 30)  -- Increased size
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.TextSize = 18
 
 -- Rounded edges
-CloseButton.ClipsDescendants = true
-CloseButton.BorderSizePixel = 0
-CloseButton.BackgroundTransparency = 0.7
-CloseButton.Parent = frame
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 5) -- Adjust radius for smoother edges
+UICorner.Parent = SubmitButton
+
+local UICorner2 = UICorner:Clone()
+UICorner2.Parent = GetKeyButton
+
+local UICorner3 = UICorner:Clone()
+UICorner3.Parent = CloseButton
 
 CloseButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
@@ -128,15 +124,12 @@ GetKeyButton.Parent = frame
 local HttpService = game:GetService("HttpService")
 
 local function fetchKey()
-    local success, response = pcall(function()
-        return HttpService:GetAsync("https://wrealaero.github.io/IcicleKeyGen/")
+    local response
+    local success, err = pcall(function()
+        response = HttpService:GetAsync("https://wrealaero.github.io/IcicleKeyGen/", true)
     end)
 
-    if success and response then
-        getgenv().Key = response
-    else
-        getgenv().Key = "InvalidKey"
-    end
+    getgenv().Key = (success and response and response ~= "") and response or "InvalidKey"
 end
 
 fetchKey()
@@ -224,7 +217,7 @@ SubmitButton.MouseButton1Click:Connect(function()
         return
     end 
 
-    if KeySystem.Text == getgenv().Key and KeySystem.Text ~= nil and KeySystem.Text ~= "" then
+    if KeySystem.Text == getgenv().Key and KeySystem.Text:match("%S") then
         screenGui:Destroy()
         loadVapeScript()
     else
