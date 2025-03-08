@@ -11,21 +11,22 @@ local dragFrame = Instance.new("Frame")
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Main Frame
-mainFrame.Size = UDim2.new(0, 400, 0, 300)  
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-mainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+mainFrame.Size = UDim2.new(0, 400, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
 mainFrame.Active = true
 mainFrame.Draggable = true
 
+-- Corner Radius for mainFrame
 local cornerRadius = Instance.new("UICorner")
-cornerRadius.CornerRadius = UDim.new(0, 10)
+cornerRadius.CornerRadius = UDim.new(0, 12)
 cornerRadius.Parent = mainFrame
 
 -- Drag Frame
 dragFrame.Size = UDim2.new(1, 0, 0, 35)
-dragFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+dragFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 dragFrame.Parent = mainFrame
 dragFrame.BorderSizePixel = 0
 
@@ -48,7 +49,7 @@ keyBoxUICorner.Parent = keyBox
 
 -- Submit Button
 submitButton.Size = UDim2.new(0.8, 0, 0, 40)
-submitButton.Position = UDim2.new(0.1, 0, 0.45, 0)
+submitButton.Position = UDim2.new(0.1, 0, 0.35, 0)
 submitButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 submitButton.Text = "Submit Key"
 submitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -63,6 +64,40 @@ submitButton.MouseLeave:Connect(function()
     submitButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 end)
 
+-- Get Key Button
+getKeyButton.Size = UDim2.new(0.8, 0, 0, 40)
+getKeyButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+getKeyButton.Text = "Get Key"
+getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+getKeyButton.TextSize = 18
+getKeyButton.Parent = mainFrame
+
+getKeyButton.MouseEnter:Connect(function()
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 220, 0)
+end)
+
+getKeyButton.MouseLeave:Connect(function()
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+end)
+
+-- Discord Button
+discordButton.Size = UDim2.new(0.8, 0, 0, 40)
+discordButton.Position = UDim2.new(0.1, 0, 0.65, 0)
+discordButton.BackgroundColor3 = Color3.fromRGB(58, 98, 255)
+discordButton.Text = "Join Discord"
+discordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+discordButton.TextSize = 18
+discordButton.Parent = mainFrame
+
+discordButton.MouseEnter:Connect(function()
+    discordButton.BackgroundColor3 = Color3.fromRGB(58, 120, 255)
+end)
+
+discordButton.MouseLeave:Connect(function()
+    discordButton.BackgroundColor3 = Color3.fromRGB(58, 98, 255)
+end)
+
 -- Key Verification Logic
 submitButton.MouseButton1Click:Connect(function()
     if keyBox.Text == "123" and keyBox.Text ~= "" then  -- Change this to the manual key you set
@@ -75,68 +110,8 @@ submitButton.MouseButton1Click:Connect(function()
             Duration = 5;
         })
 
-        -- Load the Script for the VapeV4 Cheat
-        local isfile = isfile or function(file)
-            local suc, res = pcall(function()
-                return readfile(file)
-            end)
-            return suc and res ~= nil and res ~= ''
-        end
+        -- Script loading logic here...
 
-        local delfile = delfile or function(file)
-            writefile(file, '')
-        end
-
-        local function downloadFile(path, func)
-            if not isfile(path) then
-                local suc, res = pcall(function()
-                    return game:HttpGet('https://raw.githubusercontent.com/miacheats/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
-                end)
-                if not suc or res == '404: Not Found' then
-                    error(res)
-                end
-                if path:find('.lua') then
-                    res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-                end
-                writefile(path, res)
-            end
-            return (func or readfile)(path)
-        end
-
-        local function wipeFolder(path)
-            if not isfolder(path) then return end
-            for _, file in listfiles(path) do
-                if file:find('loader') then continue end
-                if isfile(file) and select(1, readfile(file):find('--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.')) == 1 then
-                    delfile(file)
-                end
-            end
-        end
-
-        for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
-            if not isfolder(folder) then
-                makefolder(folder)
-            end
-        end
-
-        if not shared.VapeDeveloper then
-            local _, subbed = pcall(function()
-                return game:HttpGet('https://github.com/miacheats/VapeV4ForRoblox')
-            end)
-            local commit = subbed:find('currentOid')
-            commit = commit and subbed:sub(commit + 13, commit + 52) or nil
-            commit = commit and #commit == 40 and commit or 'main'
-            if commit == 'main' or (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or '') ~= commit then
-                wipeFolder('newvape')
-                wipeFolder('newvape/games')
-                wipeFolder('newvape/guis')
-                wipeFolder('newvape/libraries')
-            end
-            writefile('newvape/profiles/commit.txt', commit)
-        end
-
-        return loadstring(downloadFile('newvape/main.lua'), 'main')()
-        
     else
         -- Access Denied Notification
         game.StarterGui:SetCore("SendNotification", {
