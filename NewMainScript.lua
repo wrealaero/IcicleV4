@@ -15,10 +15,7 @@ title.TextColor3 = Color3.new(1, 1, 1)
 title.BackgroundColor3 = Color3.new(0, 0, 0)
 title.Parent = frame
 
-local dragging
-local dragInput
-local dragStart
-local startPos
+local dragging, dragInput, dragStart, startPos
 
 local function update(input)
     local delta = input.Position - dragStart
@@ -26,7 +23,7 @@ local function update(input)
 end
 
 title.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = frame.Position
@@ -40,15 +37,8 @@ title.InputBegan:Connect(function(input)
 end)
 
 title.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
         dragInput = input
-    end
-end)
-
-title.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = false
-        dragInput = nil
     end
 end)
 
@@ -60,12 +50,7 @@ end)
 
 local KeySystem = Instance.new("TextBox")
 KeySystem.Size = UDim2.new(1, 0, 0.5, 0)
-KeySystem.Position = UDim2.new(0, 0, 0, 0)
 KeySystem.Text = "Enter the Key"
-KeySystem.TextColor3 = Color3.new(0, 0, 0)
-KeySystem.BackgroundTransparency = 0.5
-KeySystem.BackgroundColor3 = Color3.new(1, 1, 1)
-KeySystem.TextWrapped = true
 KeySystem.Parent = frame
 
 local SubmitButton = Instance.new("TextButton")
@@ -91,75 +76,98 @@ GetKeyButton.Size = UDim2.new(0.5, 0, 0.5, 0)
 GetKeyButton.Position = UDim2.new(0.5, 0, 0.5, 0)
 GetKeyButton.Text = "Get Key"
 GetKeyButton.Parent = frame
---------------------------------------------------------------------------
+
+local HttpService = game:GetService("HttpService")
+
+local function fetchKey()
+    local success, response = pcall(function()
+        return HttpService:GetAsync("https://wrealaero.github.io/IcicleKeyGen/") -- Replace with actual key storage
+    end)
+
+    if success and response then
+        getgenv().Key = response
+    else
+        getgenv().Key = "InvalidKey"
+    end
+end
+
+fetchKey()
+
 SubmitButton.MouseButton1Click:Connect(function()
-    local KeySystem = KeySystem.Text
-    if KeySystem == "123" then   
-screenGui:Destroy()
+    if not getgenv().Key or getgenv().Key == "InvalidKey" then
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Error";
+            Text = "Invalid or missing key! Get a valid key from Linkvertise.";
+            Duration = 5;
+        })
+        return
+    end 
 
-local isfile = isfile or function(file)
-	local suc, res = pcall(function()
-		return readfile(file)
-	end)
-	return suc and res ~= nil and res ~= ''
-end
-local delfile = delfile or function(file)
-	writefile(file, '')
-end
+    if KeySystem.Text == getgenv().Key and KeySystem.Text ~= nil and KeySystem.Text ~= "" then
+        screenGui:Destroy()
 
-local function downloadFile(path, func)
-	if not isfile(path) then
-		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/miacheats/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
-		end)
-		if not suc or res == '404: Not Found' then
-			error(res)
-		end
-		if path:find('.lua') then
-			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-		end
-		writefile(path, res)
-	end
-	return (func or readfile)(path)
-end
+        local isfile = isfile or function(file)
+            local success, result = pcall(function()
+                return readfile(file)
+            end)
+            return success and result ~= nil and result ~= ''
+        end
 
-local function wipeFolder(path)
-	if not isfolder(path) then return end
-	for _, file in listfiles(path) do
-		if file:find('loader') then continue end
-		if isfile(file) and select(1, readfile(file):find('--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.')) == 1 then
-			delfile(file)
-		end
-	end
-end
+        local delfile = delfile or function(file)
+            writefile(file, '')
+        end
 
-for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
-	if not isfolder(folder) then
-		makefolder(folder)
-	end
-end
+        local function downloadFile(path, func)
+            if not isfile(path) then
+                local success, response = pcall(function()
+                    return game:HttpGet('https://raw.githubusercontent.com/miacheats/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+                end)
+                if not success or response == '404: Not Found' then
+                    error(response)
+                end
+                writefile(path, response)
+            end
+            return (func or readfile)(path)
+        end
 
-if not shared.VapeDeveloper then
-	local _, subbed = pcall(function()
-		return game:HttpGet('https://github.com/miacheats/VapeV4ForRoblox')
-	end)
-	local commit = subbed:find('currentOid')
-	commit = commit and subbed:sub(commit + 13, commit + 52) or nil
-	commit = commit and #commit == 40 and commit or 'main'
-	if commit == 'main' or (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or '') ~= commit then
-		wipeFolder('newvape')
-		wipeFolder('newvape/games')
-		wipeFolder('newvape/guis')
-		wipeFolder('newvape/libraries')
-	end
-	writefile('newvape/profiles/commit.txt', commit)
-end
+        local function wipeFolder(path)
+            if not isfolder(path) then return end
+            for _, file in listfiles(path) do
+                if isfile(file) and readfile(file):find('--This watermark is used') then
+                    delfile(file)
+                end
+            end
+        end
 
-return loadstring(downloadFile('newvape/main.lua'), 'main')()
-  
-  end
+        for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
+            if not isfolder(folder) then
+                makefolder(folder)
+            end
+        end
+
+        if not shared.VapeDeveloper then
+            local commit = "main"
+            if isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') ~= commit then
+                wipeFolder('newvape')
+            end
+            writefile('newvape/profiles/commit.txt', commit)
+        end
+
+        return loadstring(downloadFile('newvape/main.lua'), 'main')()
+    else
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Access Denied";
+            Text = "Incorrect key! Get the correct key from Linkvertise.";
+            Duration = 5;
+        })
+    end
 end)
 
 GetKeyButton.MouseButton1Click:Connect(function()
- setclipboard("Paste here your link to get the key") 
-end) 
+    setclipboard("https://link-hub.net/1233399/icicle-key-generator")
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Key System";
+        Text = "Link copied! Paste this on your browser";
+        Duration = 5;
+    })
+end)
