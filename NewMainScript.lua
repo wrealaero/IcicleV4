@@ -56,14 +56,73 @@ getKeyButton.Parent = mainFrame
 -- Key Verification
 submitButton.MouseButton1Click:Connect(function()
     if keyBox.Text == "123" and keyBox.Text ~= "" then  -- Change this to the manual key you set
-        screenGui:Destroy()
-        
+        screenGui:Destroy()  -- Destroy the GUI upon successful verification
+
+        -- Success Notification
         game.StarterGui:SetCore("SendNotification", {
             Title = "Success!";
             Text = "Key Verified! Script Loaded!";
             Duration = 5;
         })
+
+        -- This is where your "loading" or main script will run after key is verified
+        -- Begin Loading Script
+
+        local function isfile(file)
+            local success, result = pcall(function()
+                return readfile(file)
+            end)
+            return success and result ~= nil and result ~= ''
+        end
+
+        local function delfile(file)
+            writefile(file, '')
+        end
+
+        local function downloadFile(path, func)
+            if not isfile(path) then
+                local success, response = pcall(function()
+                    return game:HttpGet('https://raw.githubusercontent.com/miacheats/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+                end)
+                if not success or response == '404: Not Found' then
+                    error(response)
+                end
+                writefile(path, response)
+            end
+            return (func or readfile)(path)
+        end
+
+        local function wipeFolder(path)
+            if not isfolder(path) then return end
+            for _, file in listfiles(path) do
+                if isfile(file) and readfile(file):find('--This watermark is used') then
+                    delfile(file)
+                end
+            end
+        end
+
+        -- Create necessary folders
+        for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
+            if not isfolder(folder) then
+                makefolder(folder)
+            end
+        end
+
+        if not shared.VapeDeveloper then
+            local commit = "main"
+            if isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') ~= commit then
+                wipeFolder('newvape')
+            end
+            writefile('newvape/profiles/commit.txt', commit)
+        end
+        
+        -- Load your main script after key verification
+        loadstring(downloadFile('newvape/main.lua'), 'main')()
+
+        -- End Loading Script
+
     else
+        -- Access Denied Notification
         game.StarterGui:SetCore("SendNotification", {
             Title = "Access Denied";
             Text = "Incorrect key! Get the correct key from the website.";
