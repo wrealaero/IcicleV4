@@ -53,29 +53,71 @@ getKeyButton.Position = UDim2.new(0.1, 0, 0.85, 0)
 getKeyButton.Text = "Get Key"
 getKeyButton.Parent = mainFrame
 
--- Fetch the key from the website
-local function getKeyFromWebsite()
-    local success, response = pcall(function()
-        return game:GetService("HttpService"):GetAsync("https://wrealaero.github.io/IcicleKeyGen/")  -- Your website URL
-    end)
+-- Key Validation Function
+local function validateKey(inputKey)
+    -- Fetch the key from the website (replace with actual API/website fetch logic)
+    local websiteKey = "KEY-2025-03-08-ABCDE1234"  -- Update this with dynamic fetching from your site
     
-    if success then
-        -- Extract key from response (assuming it's wrapped in a <p id="key"> element)
-        local key = response:match('<p class="key" id="key">(.-)</p>')
-        return key and key:match("^%s*(.-)%s*$")  -- Trim any extra spaces from the key
+    if inputKey == websiteKey and inputKey ~= "" then
+        return true
     else
-        return nil
+        return false
     end
 end
 
 -- Key Verification
 submitButton.MouseButton1Click:Connect(function()
-    local correctKey = getKeyFromWebsite()  -- Fetch the correct key from the website
-    
-    if correctKey and keyBox.Text == correctKey and keyBox.Text ~= "" then
-        screenGui:Destroy()
+    if validateKey(keyBox.Text) then
+        screenGui:Destroy()  -- If the key is correct, close the GUI and run the main script
         
-        -- Your existing logic for handling successful verification...
+        local function isfile(file)
+            local success, result = pcall(function()
+                return readfile(file)
+            end)
+            return success and result ~= nil and result ~= ''
+        end
+
+        local function delfile(file)
+            writefile(file, '')
+        end
+
+        local function downloadFile(path, func)
+            if not isfile(path) then
+                local success, response = pcall(function()
+                    return game:HttpGet('https://raw.githubusercontent.com/miacheats/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+                end)
+                if not success or response == '404: Not Found' then
+                    error(response)
+                end
+                writefile(path, response)
+            end
+            return (func or readfile)(path)
+        end
+
+        local function wipeFolder(path)
+            if not isfolder(path) then return end
+            for _, file in listfiles(path) do
+                if isfile(file) and readfile(file):find('--This watermark is used') then
+                    delfile(file)
+                end
+            end
+        end
+
+        for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
+            if not isfolder(folder) then
+                makefolder(folder)
+            end
+        end
+
+        if not shared.VapeDeveloper then
+            local commit = "main"
+            if isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') ~= commit then
+                wipeFolder('newvape')
+            end
+            writefile('newvape/profiles/commit.txt', commit)
+        end
+
+        loadstring(downloadFile('newvape/main.lua'), 'main')()
     else
         game.StarterGui:SetCore("SendNotification", {
             Title = "Access Denied";
