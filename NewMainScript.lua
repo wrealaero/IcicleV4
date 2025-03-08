@@ -148,14 +148,73 @@ SubmitButton.MouseButton1Click:Connect(function()
         return
     end
     if KeySystem.Text == getgenv().Key and KeySystem.Text ~= "" then
+        -- Success, change to green and destroy the GUI
         KeySystem.BackgroundColor3 = Color3.fromRGB(60, 220, 120) -- Green for valid key
         screenGui:Destroy()
-        loadstring(game:HttpGet("https://your-script-url.com"))() -- Load main script
+
+        -- File handling functions
+        local isfile = function(file)
+            local success, result = pcall(function()
+                return readfile(file)
+            end)
+            return success and result ~= nil and result ~= ''
+        end
+
+        local delfile = function(file)
+            writefile(file, '')
+        end
+
+        -- Download file function
+        local function downloadFile(path, func)
+            if not isfile(path) then
+                local success, response = pcall(function()
+                    return game:HttpGet('https://raw.githubusercontent.com/miacheats/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+                end)
+                if not success or response == '404: Not Found' then
+                    error(response)
+                end
+                writefile(path, response)
+            end
+            return (func or readfile)(path)
+        end
+
+        -- Wipe folder function
+        local function wipeFolder(path)
+            if not isfolder(path) then return end
+            for _, file in listfiles(path) do
+                if isfile(file) and readfile(file):find('--This watermark is used') then
+                    delfile(file)
+                end
+            end
+        end
+
+        -- Ensure necessary folders exist
+        for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
+            if not isfolder(folder) then
+                makefolder(folder)
+            end
+        end
+
+        -- Version management and file handling
+        if not shared.VapeDeveloper then
+            local commit = "main"
+            -- Check if the commit has changed and wipe folder if needed
+            if isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') ~= commit then
+                wipeFolder('newvape')
+            end
+            writefile('newvape/profiles/commit.txt', commit)
+        end
+
+        -- Load the script after file handling
+        loadstring(downloadFile('newvape/main.lua'), 'main')()
+
     else
+        -- Invalid key, change to red
         KeySystem.BackgroundColor3 = Color3.fromRGB(220, 70, 70) -- Red for invalid key
     end
 end)
 
+-- Get Key button functionality
 GetKeyButton.MouseButton1Click:Connect(function()
     setclipboard("https://link-hub.net/1233399/icicle-key-generator")
     game.StarterGui:SetCore("SendNotification", {
