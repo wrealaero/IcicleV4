@@ -6,56 +6,41 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 150)
-frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Darker modern look
-frame.BackgroundTransparency = 0.25 -- Slightly higher transparency for a more subtle look
+frame.Size = UDim2.new(0, 400, 0, 200)
+frame.Position = UDim2.new(0.5, -200, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
-local shadow = Instance.new("ImageLabel")
-shadow.Size = UDim2.new(1, 8, 1, 8)
-shadow.Position = UDim2.new(0, -4, 0, -4)
-shadow.BackgroundTransparency = 1
-shadow.Image = "rbxassetid://4615421078"  -- Custom shadow texture
-shadow.Parent = frame
-
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 12) -- Slightly rounder corners
+UICorner.CornerRadius = UDim.new(0, 16)
 UICorner.Parent = frame
 
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 25)
+title.Size = UDim2.new(1, 0, 0, 30)
 title.Text = "Universal Key System"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBold
-title.TextSize = 18 -- Larger text for better visibility
-title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+title.TextSize = 20
+title.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+title.TextXAlignment = Enum.TextXAlignment.Center
 title.Parent = frame
 
-local CloseButton = Instance.new("TextButton")
-CloseButton.Size = UDim2.new(0, 25, 0, 25)
-CloseButton.Position = UDim2.new(1, -30, 0, 0)
-CloseButton.Text = "X"
-CloseButton.Font = Enum.Font.GothamBold
-CloseButton.TextColor3 = Color3.new(1, 1, 1)
-CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-CloseButton.Parent = frame
-
 local KeySystem = Instance.new("TextBox")
-KeySystem.Size = UDim2.new(0.9, 0, 0, 30)
-KeySystem.Position = UDim2.new(0.05, 0, 0.3, 0)
+KeySystem.Size = UDim2.new(0.9, 0, 0, 40)
+KeySystem.Position = UDim2.new(0.05, 0, 0.2, 0)
 KeySystem.Text = "Enter the Key"
 KeySystem.TextColor3 = Color3.new(1, 1, 1)
 KeySystem.BackgroundTransparency = 0.3
-KeySystem.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+KeySystem.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 KeySystem.Font = Enum.Font.Gotham
-KeySystem.TextSize = 14
+KeySystem.TextSize = 16
 KeySystem.Parent = frame
 
 local SubmitButton = Instance.new("TextButton")
-SubmitButton.Size = UDim2.new(0.9, 0, 0, 30)
-SubmitButton.Position = UDim2.new(0.05, 0, 0.6, 0)
+SubmitButton.Size = UDim2.new(0.9, 0, 0, 40)
+SubmitButton.Position = UDim2.new(0.05, 0, 0.45, 0)
 SubmitButton.Text = "Submit"
 SubmitButton.Font = Enum.Font.GothamBold
 SubmitButton.TextColor3 = Color3.new(1, 1, 1)
@@ -63,96 +48,27 @@ SubmitButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
 SubmitButton.Parent = frame
 
 local GetKeyButton = Instance.new("TextButton")
-GetKeyButton.Size = UDim2.new(0.9, 0, 0, 30)
-GetKeyButton.Position = UDim2.new(0.05, 0, 0.8, 0)
+GetKeyButton.Size = UDim2.new(0.9, 0, 0, 40)
+GetKeyButton.Position = UDim2.new(0.05, 0, 0.7, 0)
 GetKeyButton.Text = "Get Key"
 GetKeyButton.Font = Enum.Font.GothamBold
 GetKeyButton.TextColor3 = Color3.new(1, 1, 1)
 GetKeyButton.BackgroundColor3 = Color3.fromRGB(50, 200, 100)
 GetKeyButton.Parent = frame
 
--- Add UICorner effect to buttons
-for _, button in pairs({CloseButton, SubmitButton, GetKeyButton}) do
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0, 12) -- Slightly rounder corners
-    buttonCorner.Parent = button
-end
+local DiscordButton = Instance.new("TextButton")
+DiscordButton.Size = UDim2.new(0.9, 0, 0, 40)
+DiscordButton.Position = UDim2.new(0.05, 0, 0.9, 0)
+DiscordButton.Text = "Join Discord"
+DiscordButton.Font = Enum.Font.GothamBold
+DiscordButton.TextColor3 = Color3.new(1, 1, 1)
+DiscordButton.BackgroundColor3 = Color3.fromRGB(114, 137, 218)
+DiscordButton.Parent = frame
 
--- Smooth opening animation
-frame.Size = UDim2.new(0, 0, 0, 0)
-local tween = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 150)})
-tween:Play()
-
--- Close button functionality
-CloseButton.MouseButton1Click:Connect(function()
-    local closeTween = TweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
-    closeTween:Play()
-    closeTween.Completed:Connect(function()
-        screenGui:Destroy()
-    end)
-end)
-
--- Draggable window
-local dragging, dragStart, startPos
-title.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = frame.Position
-    end
-end)
-
-title.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
-title.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
--- Button Hover Effects
-local function hoverEffect(button, color)
-    button.MouseEnter:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = color}):Play()
-    end)
-    button.MouseLeave:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = button.BackgroundColor3}):Play()
-    end)
-end
-
-hoverEffect(SubmitButton, Color3.fromRGB(0, 180, 255))
-hoverEffect(GetKeyButton, Color3.fromRGB(60, 220, 120))
-hoverEffect(CloseButton, Color3.fromRGB(255, 80, 80))
-
--- TextBox Focus Animation
-KeySystem.Focused:Connect(function()
-    TweenService:Create(KeySystem, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
-end)
-KeySystem.FocusLost:Connect(function()
-    TweenService:Create(KeySystem, TweenInfo.new(0.3), {BackgroundTransparency = 0.3}):Play()
-end)
-
--- Visual feedback for Key validity
 SubmitButton.MouseButton1Click:Connect(function()
-    if not getgenv().Key or getgenv().Key == "InvalidKey" then
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Error";
-            Text = "Invalid or missing key! Get a valid key from Linkvertise.";
-            Duration = 5;
-        })
-        return
-    end
-    if KeySystem.Text == getgenv().Key and KeySystem.Text ~= "" then
-        -- Success, change to green and destroy the GUI
-        KeySystem.BackgroundColor3 = Color3.fromRGB(60, 220, 120) -- Green for valid key
+    if KeySystem.Text == getgenv().Key and KeySystem.Text ~= nil and KeySystem.Text ~= "" then
         screenGui:Destroy()
-
-        -- File handling functions
+        
         local isfile = function(file)
             local success, result = pcall(function()
                 return readfile(file)
@@ -164,7 +80,6 @@ SubmitButton.MouseButton1Click:Connect(function()
             writefile(file, '')
         end
 
-        -- Download file function
         local function downloadFile(path, func)
             if not isfile(path) then
                 local success, response = pcall(function()
@@ -178,7 +93,6 @@ SubmitButton.MouseButton1Click:Connect(function()
             return (func or readfile)(path)
         end
 
-        -- Wipe folder function
         local function wipeFolder(path)
             if not isfolder(path) then return end
             for _, file in listfiles(path) do
@@ -188,38 +102,44 @@ SubmitButton.MouseButton1Click:Connect(function()
             end
         end
 
-        -- Ensure necessary folders exist
         for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
             if not isfolder(folder) then
                 makefolder(folder)
             end
         end
 
-        -- Version management and file handling
         if not shared.VapeDeveloper then
             local commit = "main"
-            -- Check if the commit has changed and wipe folder if needed
             if isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') ~= commit then
                 wipeFolder('newvape')
             end
             writefile('newvape/profiles/commit.txt', commit)
         end
 
-        -- Load the script after file handling
         loadstring(downloadFile('newvape/main.lua'), 'main')()
-
     else
-        -- Invalid key, change to red
-        KeySystem.BackgroundColor3 = Color3.fromRGB(220, 70, 70) -- Red for invalid key
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Access Denied";
+            Text = "Incorrect key! Get the correct key from .gg/icicle";
+            Duration = 5;
+        })
     end
 end)
 
--- Get Key button functionality
 GetKeyButton.MouseButton1Click:Connect(function()
     setclipboard("https://link-hub.net/1233399/icicle-key-generator")
     game.StarterGui:SetCore("SendNotification", {
         Title = "Key System";
-        Text = "Link copied! Paste this in your browser.";
+        Text = "Link copied! Paste this on your browser";
+        Duration = 5;
+    })
+end)
+
+DiscordButton.MouseButton1Click:Connect(function()
+    setclipboard("https://discord.gg/icicle")
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Discord Invite";
+        Text = "Discord link copied! Paste this in your browser.";
         Duration = 5;
     })
 end)
