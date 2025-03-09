@@ -163,5 +163,5 @@ return loadstring(downloadFile('newvape/main.lua'), 'main')()
 end)
 
 GetKeyButton.MouseButton1Click:Connect(function()
- setclipboard("Paste here your link to get the key") 
+ setclipboard("https://linkvertise.com/1233399/icicle-key-generator?o=sharing") 
 end) 
