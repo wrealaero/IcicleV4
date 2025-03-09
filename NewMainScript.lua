@@ -96,7 +96,7 @@ GetKeyButton.Parent = frame
 --------------------------------------------------------------------------
 SubmitButton.MouseButton1Click:Connect(function()
     local KeySystem = KeySystem.Text
-    if KeySystem == "Your Key" then   
+    if KeySystem == "123" then   
 screenGui:Destroy()
 
 local isfile = isfile or function(file)
